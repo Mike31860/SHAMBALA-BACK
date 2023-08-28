@@ -13,6 +13,8 @@ export class PostsController {
 
   @Get()
   async getPosts() {
+    const posts = await this.getAllPostsUseCase.getInstance().execute();
+    console.log(posts)
     return [{ id: 1, name: 'gg', description: 'GG' }];
   }
 }
