@@ -1,4 +1,4 @@
-import { IsAuthUserUseCase } from '@domain/use-cases/auth';
+import { IsAuthUserUseCase } from '@domain/use-cases/auth/models';
 import { AUTH_USE_CASES } from '@infrastructure/use-cases-proxy/auth-use-cases-proxy';
 import { UseCaseProxy } from '@infrastructure/use-cases-proxy/use-cases.provider';
 import { Injectable, Inject, NestMiddleware } from '@nestjs/common';

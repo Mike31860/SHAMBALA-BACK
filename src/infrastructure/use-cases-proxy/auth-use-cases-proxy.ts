@@ -1,7 +1,8 @@
 import { Provider } from '@nestjs/common';
 import { UseCaseProxy } from './use-cases.provider';
-import { IsFirebaseAuthUser } from '@use-cases/auth/isFirebaseAuthUser.usecase';
+import { IsAppAuthUserUseCase } from '@domain/use-cases/auth';
 import { FirebaseApp } from '../repositories/firebase/firebase-app/firebase-app';
+import { AuthRepository } from '@domain/repositories/auth.repository';
 
 export enum AUTH_USE_CASES {
   LOGIN_USECASES_PROXY = 'LoginUseCasesProxy',
@@ -19,8 +20,8 @@ export const authUseCasesProviders: Provider[] = [
   {
     inject: [FirebaseApp],
     provide: AUTH_USE_CASES.IS_AUTHENTICATED_USECASES_PROXY,
-    useFactory: (firebaseApp: FirebaseApp) =>
-      new UseCaseProxy(new IsFirebaseAuthUser(firebaseApp)),
+    useFactory: (authRepository: AuthRepository) =>
+      new UseCaseProxy(new IsAppAuthUserUseCase(authRepository)),
   },
   //   {
   //     inject: [],

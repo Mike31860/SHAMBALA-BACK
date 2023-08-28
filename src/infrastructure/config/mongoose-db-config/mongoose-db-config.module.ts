@@ -10,6 +10,8 @@ export const getMongooseModuleOptions = (
   const password = config.getDatabasePassword();
   const user = config.getDatabaseUser();
   const uri = `${config.getDatabaseHost()}://${user}:${password}/${dbName}`;
+
+  console.log(uri);
   return {
     uri,
   } as MongooseModuleOptions;
