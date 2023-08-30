@@ -17,7 +17,7 @@ export class FirebaseApp implements AuthRepository {
   async verifyToken(accessToken: string): Promise<Partial<User>> {
     const decodedToken = await firebase
       .auth(this.firebaseApp)
-      .verifyIdToken(accessToken);
+      .verifySessionCookie(accessToken);
     const user: Partial<User> = {
       password: '',
       username: decodedToken.uid,
