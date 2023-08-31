@@ -46,7 +46,6 @@ export const configurations = (): Partial<Configurations> => {
         private_key: process.env.FIREBASE_PRIVATE_KEY,
       },
     };
-    console.log('CONFIGS ', configurations);
     return configurations;
   }
   return yaml.load(
