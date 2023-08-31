@@ -48,20 +48,32 @@ $ npm run start:prod
 ## Configuration
 Add the following environemnt variables to your .env.local.yml
 app:
+
   port: 4000
+  
   context-path: shambala
+  
 db:
+
   user: 
+  
   password:
+  
   host: 
+  
   name: 
+  
   port: undefined
+  
   schema: undefined
+  
   sync: false
+  
 firebase:
+
   serviceAccount: 'path/shambala-5802c-firebase-adminsdk-kuu9t-cdaced1ea4.json'
 
-  Make sure you replcae the DB environment variables for the Mongo DB Variables, and also the serviceAccount variable, replace the path where the file is located
+  Make sure you replace the DB environment variables for the Mongo DB Variables and also the service account variable, replace the path where the file is located.
 
 
 
