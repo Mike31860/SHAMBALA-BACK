@@ -13,11 +13,11 @@ export class MongoPostsRepository implements PostsRepository {
   constructor(@InjectModel(DBPost.name) private postModel: Model<DBPost>) {}
 
   async updatePost(post: Post): Promise<void> {
-    await this.postModel.updateOne(mapDomainPost(post));
+    await this.postModel.updateOne(mapDomainPost(post)).exec();
   }
 
   async findByUser(userId: string): Promise<Post[]> {
-    const posts: DBPost[] = await this.postModel.find({ owner: userId });
+    const posts: DBPost[] = await this.postModel.find({ owner: userId }).exec();
     return posts.map(mapModelPost);
   }
 
@@ -32,7 +32,7 @@ export class MongoPostsRepository implements PostsRepository {
   }
 
   async findById(postId: PostId): Promise<Post> {
-    const postt: DBPost = await this.postModel.findById(postId);
+    const postt: DBPost = await this.postModel.findById(postId).exec();
     return mapModelPost(postt);
   }
 

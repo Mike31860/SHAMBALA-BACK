@@ -8,8 +8,8 @@ export const mapDomainPost = (post: Post): DBPost => {
     urlImage: post.urlImage,
     description: post.description,
     commentsCount: post.commentsCount,
-    userIdsLike:
-      post.userIdsLike && post.userIdsLike.length ? post.userIdsLike : [],
+    likesCount: post?.userIdsLike?.length ?? 0,
+    userIdsLike: post?.userIdsLike ?? [],
   };
 };
 
@@ -21,7 +21,6 @@ export const mapModelPost = (post: DBPost): Post => {
     owner: post.owner,
     description: post.description,
     commentsCount: post.commentsCount,
-    userIdsLike:
-      post.userIdsLike && post.userIdsLike.length ? post.userIdsLike : [],
+    userIdsLike: post.userIdsLike ?? [],
   };
 };
