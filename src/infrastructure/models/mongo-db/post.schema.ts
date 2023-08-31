@@ -25,6 +25,9 @@ export class Post {
 
   @Prop()
   commentsCount?: number;
+
+  @Prop()
+  userIdsLike?: string[];
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

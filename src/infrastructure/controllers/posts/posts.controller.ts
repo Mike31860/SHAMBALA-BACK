@@ -16,9 +16,9 @@ import {
   Inject,
   Param,
   Put,
+  Req,
   Post,
 } from '@nestjs/common';
-import { PostDTO } from './posts.dto';
 import { UserDecorator } from '../decorator';
 import {
   ApiBearerAuth,
@@ -27,7 +27,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { postDTOExamples } from './dto';
+import { CreateCommentDTO, PostDTO } from './posts.dto';
+import { COMMENT_USE_CASES } from '@infrastructure/use-cases-proxy/comment-use-cases-proxy';
+import { CreateComment } from '@domain/use-cases/comment/createComment/model';
+import { ApiResponseType } from '@infrastructure/common/swagger/response.decorator';
+import { LikePost } from '@domain/use-cases/post/likePost/models';
+import { GetCommentByPostId } from '@domain/use-cases/comment/getCommentByPostId/model';
+import { CommentPresenter } from '../shared/comments.presenter';
+import { mapToPresenter } from './mappers';
+import { PostPresenter } from './posts.presenter';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -47,28 +55,23 @@ export class PostsController {
     private readonly updatePostUseCase: UseCaseProxy<UpdatePost>,
     @Inject(POST_USE_CASES.GET_POST_BY_USER_ID_USE_CASE)
     private readonly getPostByUserIdUseCase: UseCaseProxy<GetPostByUserUserCase>,
+    @Inject(COMMENT_USE_CASES.CREATE_COMMENT_USE_CASE)
+    private readonly createCommentUseCase: UseCaseProxy<CreateComment>,
+    @Inject(POST_USE_CASES.LIKE_POST_USE_CASE)
+    private readonly likePostUseCase: UseCaseProxy<LikePost>,
+    @Inject(COMMENT_USE_CASES.GET_COMMENT_BY_POST_ID_USE_CASE)
+    private readonly getCommentByPostiIdUseCase: UseCaseProxy<GetCommentByPostId>,
   ) {}
 
   @Get()
-  async getPosts(@UserDecorator() userInfo) {
+  @ApiResponseType(PostPresenter, true)
+  async getPosts(@UserDecorator() userInfo: User) {
     /* item.userIdsLike.some((postFound) => postFound == userInfo.username)) */
     const posts = await this.getAllPostsUseCase.getInstance().execute();
-    const allPost = posts.map((item) => {
-      const postUpdated: PostDomain = {
-        id: item.id,
-        title: item.title,
-        owner: item.owner,
-        urlImage: item.urlImage,
-        description: item.description,
-        likesCount: item.likesCount,
-        commentsCount: item.commentsCount,
-        likeUser: item.userIdsLike.some(
-          (userId) => userId == userInfo.username,
-        ),
-      };
+    const allPost = posts.map((post) =>
+      mapToPresenter(post, userInfo.username),
+    );
 
-      return postUpdated;
-    });
     return allPost;
   }
 
@@ -76,8 +79,8 @@ export class PostsController {
   @ApiBody({
     type: [PostDTO],
     description: 'Send a new post data',
-    examples: postDTOExamples,
   })
+  @ApiResponseType(PostPresenter)
   @ApiOperation({ summary: 'Creates a new post and attach it to a given user' })
   async createPost(@UserDecorator() userInfo: User, @Body() post: PostDTO) {
     const postAdd: PostDomain = {
@@ -85,22 +88,18 @@ export class PostsController {
       owner: userInfo.username,
       urlImage: post.urlImage,
       description: post.description,
-      likesCount: 0,
       commentsCount: 0,
       userIdsLike: [],
     };
-    const postCreated = await this.createPostsUseCase
-      .getInstance()
-      .execute(postAdd);
-    return postCreated;
+    return this.createPostsUseCase.getInstance().execute(postAdd);
   }
 
-  @Delete('delete/:postId')
+  @Delete(':postId')
   async deletePosts(@Param('postId') postId: PostId) {
     await this.deletePostsUseCase.getInstance().execute(postId);
   }
 
-  @Get('find/:postId')
+  @Get(':postId')
   async findById(@Param('postId') postId: PostId) {
     const post: PostDomain = await this.getPostByIdUseCase
       .getInstance()
@@ -108,16 +107,38 @@ export class PostsController {
     return post;
   }
 
+  @Post(':postId/comment')
+  @ApiResponse({ status: 200 })
+  async postComment(
+    @UserDecorator() user: User,
+    @Param('postId') postId: string,
+    @Body() comment,
+  ) {
+    const comm = await this.createCommentUseCase
+      .getInstance()
+      .execute(user.username, postId, comment.content);
+    return comm;
+  }
+
+  @Post(':postId/like')
+  @ApiResponse({ status: 200 })
+  async likePost(@UserDecorator() user: User, @Param('postId') postId: string) {
+    const comm = await this.likePostUseCase
+      .getInstance()
+      .execute(user.username, postId);
+    return comm;
+  }
+
   @Get('user/:userId')
   async findPostByUserId(@Param('userId') userId: UserId) {
-    const post = await this.getPostByUserIdUseCase
+    const posts = await this.getPostByUserIdUseCase
       .getInstance()
       .execute(userId);
 
-    return post;
+    return posts.map((post) => mapToPresenter(post, userId));
   }
 
-  @Put('update/:postId')
+  @Put(':postId')
   async updatePost(
     @UserDecorator() userInfo: User,
     @Param('postId') postId: PostId,
@@ -125,17 +146,16 @@ export class PostsController {
     const postFound: PostDomain = await this.findById(postId);
     if (!postFound.userIdsLike.some((item) => item == userInfo.username)) {
       postFound.userIdsLike.push(userInfo.username);
-      const postUpdate: PostDomain = {
-        id: postFound.id,
-        title: postFound.title,
-        owner: postFound.owner,
-        urlImage: postFound.urlImage,
-        description: postFound.description,
-        commentsCount: postFound.commentsCount,
-        likesCount: postFound.likesCount + 1,
-        userIdsLike: postFound.userIdsLike,
-      };
-      await this.updatePostUseCase.getInstance().execute(postUpdate);
+
+      await this.updatePostUseCase
+        .getInstance()
+        .execute(mapToPresenter(postFound));
     }
+  }
+
+  @Get(':postId/comments')
+  @ApiResponseType(CommentPresenter, true)
+  async findCommentsByPostId(@Param('postId') postID: PostId) {
+    return await this.getCommentByPostiIdUseCase.getInstance().execute(postID);
   }
 }

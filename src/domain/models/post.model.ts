@@ -9,8 +9,6 @@ export interface Post {
   owner: UserId;
   urlImage?: string;
   description?: string;
-  likesCount?: number;
   commentsCount?: number;
   userIdsLike?: string[];
-  likeUser?: boolean;
 }

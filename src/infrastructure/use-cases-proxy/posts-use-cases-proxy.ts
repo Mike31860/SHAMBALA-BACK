@@ -8,6 +8,7 @@ import { CreatePostUseCase } from '@domain/use-cases/post/createPost';
 import { GetPostByIdUseCase } from '@domain/use-cases/post/getPostById';
 import { UpdatePostUseCase } from '@domain/use-cases/post/updatePost';
 import { GetPostByUserUserCase } from '@domain/use-cases/post/getAllPostByUser';
+import { LikePostUseCase } from '@domain/use-cases/post/likePost';
 
 export enum POST_USE_CASES {
   GET_ALL_POSTS_USE_CASE = 'getAllPostsUseCase',
@@ -16,6 +17,7 @@ export enum POST_USE_CASES {
   GET_POST_BY_ID_USE_CASE = 'findPostByIdUseCase',
   UPDATE_POST_USE_CASE = 'updatePostUseCase',
   GET_POST_BY_USER_ID_USE_CASE = 'getPostByUserIdUseCase',
+  LIKE_POST_USE_CASE = 'likePostUseCase',
 }
 
 export const postsUseCaseExports: string[] = [
@@ -25,6 +27,7 @@ export const postsUseCaseExports: string[] = [
   POST_USE_CASES.GET_POST_BY_ID_USE_CASE,
   POST_USE_CASES.UPDATE_POST_USE_CASE,
   POST_USE_CASES.GET_POST_BY_USER_ID_USE_CASE,
+  POST_USE_CASES.LIKE_POST_USE_CASE,
 ];
 
 export const postsUseCasesProviders: Provider[] = [
@@ -33,6 +36,12 @@ export const postsUseCasesProviders: Provider[] = [
     provide: POST_USE_CASES.GET_ALL_POSTS_USE_CASE,
     useFactory: (postsRepository: PostsRepository) =>
       new UseCaseProxy(new GetAllPostsUseCase(postsRepository)),
+  },
+  {
+    inject: [MongoPostsRepository],
+    provide: POST_USE_CASES.LIKE_POST_USE_CASE,
+    useFactory: (postsRepository: PostsRepository) =>
+      new UseCaseProxy(new LikePostUseCase(postsRepository)),
   },
   {
     inject: [MongoPostsRepository],

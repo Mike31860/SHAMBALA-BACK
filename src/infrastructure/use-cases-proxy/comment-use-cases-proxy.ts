@@ -4,7 +4,7 @@ import { MongoPostsRepository } from '@infrastructure/repositories/mongo-db/post
 import { UseCaseProxy } from './use-cases.provider';
 import { Provider } from '@nestjs/common';
 import { MongoCommentRepository } from '@infrastructure/repositories/mongo-db/comment.repository';
-import { CreateCommentUseCase } from '@domain/use-cases/comment/createComment/idex';
+import { CreateCommentUseCase } from '@domain/use-cases/comment/createComment';
 import { DeleteCommentUseCase } from '@domain/use-cases/comment/deleteComment';
 import { GetCommentByIdUseCase } from '@domain/use-cases/comment/getCommentById';
 import { GetPostByIdUseCase } from '@domain/use-cases/post/getPostById';

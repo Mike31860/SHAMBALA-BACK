@@ -1,16 +1,13 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
 import { ResponseFormat } from '../interceptors/response.interceptor';
 
-
-
-
-export const ApiResponseType = <TModel extends Type<any>>(
+export const ApiBodyType = <TModel extends Type<any>>(
   model: TModel,
   isArray?: boolean,
 ) => {
   return applyDecorators(
-    ApiOkResponse({
+    ApiBody({
       isArray: isArray,
       schema: {
         allOf: [
