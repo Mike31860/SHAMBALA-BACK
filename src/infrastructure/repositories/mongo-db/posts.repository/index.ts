@@ -1,14 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { PostsRepository } from '@domain/repositories/post.repository';
-import { Post } from '@domain/models/post.model';
+import { PostId, Post } from '@domain/models/post.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { Post as DBPost } from '@infrastructure/models/mongo-db/post.schema';
 import { Model } from 'mongoose';
 import { mapDomainPost, mapModelPost } from './mappers';
+import { NotFoundException } from '@domain/exceptions/NoFoundException';
+import { PostDTO } from '@infrastructure/controllers/posts/posts.dto';
 
 @Injectable()
 export class MongoPostsRepository implements PostsRepository {
   constructor(@InjectModel(DBPost.name) private postModel: Model<DBPost>) {}
+
+  async updatePost(post: Post): Promise<void> {
+    await this.postModel.updateOne(mapDomainPost(post));
+  }
+
+  async findByUser(userId: string): Promise<Post[]> {
+    const posts: DBPost[] = await this.postModel.find({ owner: userId });
+    return posts.map(mapModelPost);
+  }
 
   async insert(post: Post): Promise<void> {
     const createdPost = new this.postModel(mapDomainPost(post));
@@ -20,13 +31,13 @@ export class MongoPostsRepository implements PostsRepository {
     return posts.map(mapModelPost);
   }
 
-  findById(id: string): Promise<string> {
-    throw new Error('Method not implemented.');
+  async findById(postId: PostId): Promise<Post> {
+    const postt: DBPost = await this.postModel.findById(postId);
+    return mapModelPost(postt);
   }
-  update(post: Post): Promise<Post> {
-    throw new Error('Method not implemented.');
-  }
-  deleteById(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async deleteById(postId: PostId): Promise<void> {
+    const postt = { _id: postId };
+    await this.postModel.deleteOne(postt);
   }
 }

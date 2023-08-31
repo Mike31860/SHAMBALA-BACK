@@ -10,6 +10,10 @@ import {
   postsUseCaseExports,
   postsUseCasesProviders,
 } from './posts-use-cases-proxy';
+import {
+  commentsUseCaseExports,
+  commentsUseCasesProviders,
+} from './comment-use-cases-proxy';
 
 @Module({
   imports: [EnvironmentConfigModule, MongoDbRepositoriesModule, FirebaseModule],
@@ -18,8 +22,16 @@ export class UseCasesProxyModule {
   static register(): DynamicModule {
     return {
       module: UseCasesProxyModule,
-      providers: [...authUseCasesProviders, ...postsUseCasesProviders],
-      exports: [...authUseCaseExports, ...postsUseCaseExports],
+      providers: [
+        ...authUseCasesProviders,
+        ...postsUseCasesProviders,
+        ...commentsUseCasesProviders,
+      ],
+      exports: [
+        ...authUseCaseExports,
+        ...postsUseCaseExports,
+        ...commentsUseCaseExports,
+      ],
     };
   }
 }

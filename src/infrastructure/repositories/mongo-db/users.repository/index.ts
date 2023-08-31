@@ -1,4 +1,4 @@
-import { User } from '@domain/models/user.model';
+import { User, UserId } from '@domain/models/user.model';
 import { UsersRepository } from '@domain/repositories/users.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -20,10 +20,11 @@ export class MongoUsersRepository implements UsersRepository {
     return users.map(mapModelUser);
   }
 
-  findById(id: string): Promise<User> {
-    throw new Error('Method not implemented.');
+  async findById(userId: UserId): Promise<User> {
+    const user: DBUser = await this.userModel.findById(userId);
+    return mapModelUser(user);
   }
-  update(id: string, user: User): Promise<User> {
+  async update(id: string, user: User): Promise<User> {
     throw new Error('Method not implemented.');
   }
   deleteById(id: string): Promise<void> {

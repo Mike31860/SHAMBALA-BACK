@@ -3,12 +3,26 @@ import { EnvironmentConfigModule } from '@infrastructure/config/environment-conf
 import { UseCasesProxyModule } from '@infrastructure/use-cases-proxy/use-cases-proxy.module';
 import { ControllersModule } from '@infrastructure/controllers/controllers.module';
 import { PreAuthMiddleware } from '@infrastructure/middlewares/preauth-middleware/preauth-middleware.middleware';
+import { GetUserInterceptor } from '@infrastructure/middlewares/auth.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+
+import { AUTH_USE_CASES } from '@infrastructure/use-cases-proxy/auth-use-cases-proxy';
+import { IsAppAuthUserUseCase } from '@domain/use-cases/auth';
+import { UseCaseProxy } from '@infrastructure/use-cases-proxy/use-cases.provider';
 
 @Module({
   imports: [
     EnvironmentConfigModule,
     UseCasesProxyModule.register(),
     ControllersModule,
+  ],
+  providers: [
+    {
+      inject: [AUTH_USE_CASES.IS_AUTHENTICATED_USECASES_PROXY],
+      provide: APP_INTERCEPTOR,
+      useFactory: (useCaseProxy: UseCaseProxy<IsAppAuthUserUseCase>) =>
+        new GetUserInterceptor(useCaseProxy),
+    },
   ],
 })
 export class AppModule implements NestModule {

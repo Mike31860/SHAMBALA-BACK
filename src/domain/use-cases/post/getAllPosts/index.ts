@@ -1,10 +1,10 @@
 import { Post } from '@domain/models/post.model';
 import { PostsRepository } from '@domain/repositories/post.repository';
-import { GetAllPostsUseCase } from '@domain/use-cases/getAllPosts/models';
+import { GetAllPosts } from '@domain/use-cases/post/getAllPosts/models';
 import { Inject, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class getAllAppPostsUseCase implements GetAllPostsUseCase {
+export class GetAllPostsUseCase implements GetAllPosts {
   constructor(
     @Inject()
     private readonly postsRepository: PostsRepository,

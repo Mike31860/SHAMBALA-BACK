@@ -14,13 +14,13 @@ export class FirebaseApp implements AuthRepository {
       credential: firebase.credential.cert(serviceAccountPath),
     });
   }
-  async verifyToken(accessToken: string): Promise<Partial<User>> {
+  async verifyToken(accessToken: string): Promise<User> {
     const decodedToken = await firebase
       .auth(this.firebaseApp)
       .verifyIdToken(accessToken);
-    const user: Partial<User> = {
+    const user: User = {
       password: '',
-      username: decodedToken.uid,
+      username: decodedToken.email,
       accessToken: accessToken,
     };
 
