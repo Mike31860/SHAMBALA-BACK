@@ -6,7 +6,6 @@ import { GetPostByUserUserCase } from '@domain/use-cases/post/getAllPostByUser';
 import { GetAllPosts } from '@domain/use-cases/post/getAllPosts/models';
 import { GetPostById } from '@domain/use-cases/post/getPostById/model';
 import { UpdatePost } from '@domain/use-cases/post/updatePost/model';
-import { ApiResponseType } from '@infrastructure/common/swagger/response.decorator';
 import { POST_USE_CASES } from '@infrastructure/use-cases-proxy/posts-use-cases-proxy';
 import { UseCaseProxy } from '@infrastructure/use-cases-proxy/use-cases.provider';
 import {
@@ -21,9 +20,19 @@ import {
 } from '@nestjs/common';
 import { PostDTO } from './posts.dto';
 import { UserDecorator } from '../decorator';
-import { NotFoundException } from '@domain/exceptions/NoFoundException';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { postDTOExamples } from './dto';
 
 @Controller('posts')
+@ApiTags('posts')
+@ApiResponse({ status: 500, description: 'Internal error' })
+@ApiBearerAuth('accessToken')
 export class PostsController {
   constructor(
     @Inject(POST_USE_CASES.GET_ALL_POSTS_USE_CASE)
@@ -64,6 +73,12 @@ export class PostsController {
   }
 
   @Post('create')
+  @ApiBody({
+    type: [PostDTO],
+    description: 'Send a new post data',
+    examples: postDTOExamples,
+  })
+  @ApiOperation({ summary: 'Creates a new post and attach it to a given user' })
   async createPost(@UserDecorator() userInfo: User, @Body() post: PostDTO) {
     const postAdd: PostDomain = {
       title: post.title,

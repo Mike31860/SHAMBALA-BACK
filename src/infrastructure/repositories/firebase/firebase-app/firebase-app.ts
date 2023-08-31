@@ -14,6 +14,7 @@ export class FirebaseApp implements AuthRepository {
       credential: firebase.credential.cert(serviceAccountPath),
     });
   }
+  //@TODO change verify token for verifySession
   async verifyToken(accessToken: string): Promise<User> {
     const decodedToken = await firebase
       .auth(this.firebaseApp)
