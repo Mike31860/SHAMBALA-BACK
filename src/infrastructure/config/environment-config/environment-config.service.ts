@@ -14,7 +14,9 @@ export class EnvironmentConfigService
     const serviceAccount: ServiceAccount = {
       projectId: this.configService.get('firebase.project_id'),
       clientEmail: this.configService.get('firebase.client_email'),
-      privateKey: this.configService.get('firebase.private_key'),
+      privateKey: this.configService
+        .get('firebase.private_key')
+        .replace(/\\n/gm, '\n'),
     };
 
     return serviceAccount;
