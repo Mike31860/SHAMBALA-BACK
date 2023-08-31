@@ -31,7 +31,7 @@ export const configurations = (): Partial<Configurations> => {
     const configurations: Partial<Configurations> = {
       app: {
         'context-path': process.env.APP_CONTEXT_PATH,
-        port: parseInt(process.env.APP_PORT ?? '3000'),
+        port: parseInt(process.env.PORT ?? '3000'),
       },
       db: {
         host: process.env.DB_HOST,
