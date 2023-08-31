@@ -27,7 +27,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { CreateCommentDTO, PostDTO } from './posts.dto';
+import { PostDTO } from './posts.dto';
 import { COMMENT_USE_CASES } from '@infrastructure/use-cases-proxy/comment-use-cases-proxy';
 import { CreateComment } from '@domain/use-cases/comment/createComment/model';
 import { ApiResponseType } from '@infrastructure/common/swagger/response.decorator';
