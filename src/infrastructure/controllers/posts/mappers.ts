@@ -14,6 +14,6 @@ export const mapToPresenter = (
     likesCount: post?.userIdsLike?.length ?? 0,
     description: post.description,
     id: post.id,
-    likeUser: post?.userIdsLike?.some((id) => id === currentUser),
+    likeUser: post?.userIdsLike?.some((id) => id == currentUser) ?? false,
   };
 };

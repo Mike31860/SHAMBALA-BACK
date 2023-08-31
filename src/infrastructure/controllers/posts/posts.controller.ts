@@ -36,6 +36,7 @@ import { GetCommentByPostId } from '@domain/use-cases/comment/getCommentByPostId
 import { CommentPresenter } from '../shared/comments.presenter';
 import { mapToPresenter } from './mappers';
 import { PostPresenter } from './posts.presenter';
+import { NotFoundException } from '@domain/exceptions/NoFoundException';
 
 @Controller('posts')
 @ApiTags('posts')
@@ -91,7 +92,7 @@ export class PostsController {
       commentsCount: 0,
       userIdsLike: [],
     };
-    return this.createPostsUseCase.getInstance().execute(postAdd);
+    return await this.createPostsUseCase.getInstance().execute(postAdd);
   }
 
   @Delete(':postId')
@@ -100,11 +101,11 @@ export class PostsController {
   }
 
   @Get(':postId')
-  async findById(@Param('postId') postId: PostId) {
+  async findById(@UserDecorator() user: User, @Param('postId') postId: PostId) {
     const post: PostDomain = await this.getPostByIdUseCase
       .getInstance()
       .execute(postId);
-    return post;
+    return mapToPresenter(post, user.username);
   }
 
   @Post(':postId/comment')
@@ -143,14 +144,14 @@ export class PostsController {
     @UserDecorator() userInfo: User,
     @Param('postId') postId: PostId,
   ) {
-    const postFound: PostDomain = await this.findById(postId);
+    const postFound: PostDomain = await this.findById(userInfo, postId);
     if (!postFound.userIdsLike.some((item) => item == userInfo.username)) {
       postFound.userIdsLike.push(userInfo.username);
 
-      await this.updatePostUseCase
-        .getInstance()
-        .execute(mapToPresenter(postFound));
+      return await this.updatePostUseCase.getInstance().execute(postFound);
     }
+
+    throw new NotFoundException(`postID:${postId}`);
   }
 
   @Get(':postId/comments')
