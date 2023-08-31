@@ -45,29 +45,37 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Configuration
+Add the following environemnt variables to your .env.local.yml
+app:
 
-```bash
-# unit tests
-$ npm run test
+  port: 4000
+  
+  context-path: shambala
+  
+db:
 
-# e2e tests
-$ npm run test:e2e
+  user: 
+  
+  password:
+  
+  host: 
+  
+  name: 
+  
+  port: undefined
+  
+  schema: undefined
+  
+  sync: false
+  
+firebase:
 
-# test coverage
-$ npm run test:cov
-```
+  serviceAccount: 'path/shambala-5802c-firebase-adminsdk-kuu9t-cdaced1ea4.json'
 
-## Support
+  Make sure you replace the DB environment variables for the Mongo DB Variables and also the service account variable, replace the path where the file is located.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
 
-Nest is [MIT licensed](LICENSE).
