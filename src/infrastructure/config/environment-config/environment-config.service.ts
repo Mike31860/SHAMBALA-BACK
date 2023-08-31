@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from '@domain/repositories/db-config-models';
 import { AppConfigurations } from './models';
+import { ServiceAccount } from 'firebase-admin';
 
 @Injectable()
 export class EnvironmentConfigService
@@ -9,8 +10,16 @@ export class EnvironmentConfigService
 {
   constructor(private configService: ConfigService) {}
 
-  getFirebaseServiceAccountPath(): string {
-    return this.configService.get('firebase.serviceAccount');
+  getFirebaseServiceAccountPath(): ServiceAccount {
+    const serviceAccount: ServiceAccount = {
+      projectId: this.configService.get('firebase.project_id'),
+      clientEmail: this.configService.get('firebase.client_email'),
+      privateKey: this.configService
+        .get('firebase.private_key')
+        .replace(/\\n/gm, '\n'),
+    };
+
+    return serviceAccount;
   }
 
   getAppPort(): number {

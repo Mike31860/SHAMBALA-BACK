@@ -115,6 +115,7 @@ export class PostsController {
     @Param('postId') postId: string,
     @Body() comment,
   ) {
+    console.log('comment ', comment);
     const comm = await this.createCommentUseCase
       .getInstance()
       .execute(user.username, postId, comment.content);

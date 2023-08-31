@@ -5,15 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Post as DBPost } from '@infrastructure/models/mongo-db/post.schema';
 import { Model } from 'mongoose';
 import { mapDomainPost, mapModelPost } from './mappers';
-import { NotFoundException } from '@domain/exceptions/NoFoundException';
-import { PostDTO } from '@infrastructure/controllers/posts/posts.dto';
 
 @Injectable()
 export class MongoPostsRepository implements PostsRepository {
   constructor(@InjectModel(DBPost.name) private postModel: Model<DBPost>) {}
 
   async updatePost(post: Post): Promise<void> {
-    await this.postModel.updateOne(mapDomainPost(post)).exec();
+    const { _id, ...updatePost } = mapDomainPost(post);
+    await this.postModel.updateOne({ _id: _id }, updatePost).exec();
   }
 
   async findByUser(userId: string): Promise<Post[]> {

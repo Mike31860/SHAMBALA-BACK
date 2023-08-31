@@ -9,9 +9,15 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AUTH_USE_CASES } from '@infrastructure/use-cases-proxy/auth-use-cases-proxy';
 import { IsAppAuthUserUseCase } from '@domain/use-cases/auth';
 import { UseCaseProxy } from '@infrastructure/use-cases-proxy/use-cases.provider';
+import { ConfigModule } from '@nestjs/config';
+import { configurations } from '@infrastructure/config/environment-config/deploy-configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configurations],
+    }),
     EnvironmentConfigModule,
     UseCasesProxyModule.register(),
     ControllersModule,
