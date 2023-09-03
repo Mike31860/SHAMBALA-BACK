@@ -17,6 +17,7 @@ export interface Configurations {
     port?: number;
     schema?: string;
     sync: boolean;
+    params?: string;
   };
   firebase: {
     project_id: string;
@@ -39,6 +40,7 @@ export const configurations = (): Partial<Configurations> => {
         password: process.env.DB_PASSWORD,
         sync: new Boolean(process.env.DB_SYNC).valueOf(),
         user: process.env.DB_USER,
+        params: process.env.DB_PARAMS,
       },
       firebase: {
         client_email: process.env.FIREBASE_CLIENT_EMAIL,

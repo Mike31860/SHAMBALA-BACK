@@ -9,6 +9,9 @@ export class EnvironmentConfigService
   implements DatabaseConfig, AppConfigurations
 {
   constructor(private configService: ConfigService) {}
+  getDbParams(): string {
+    return this.configService.get<string>('db.params');
+  }
 
   getFirebaseServiceAccountPath(): ServiceAccount {
     const serviceAccount: ServiceAccount = {

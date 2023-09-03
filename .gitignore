@@ -40,6 +40,9 @@ lerna-debug.log*
 # Local configs
 .env*.yaml
 .env*
+!.env-example
+!.env-yaml-example.yaml
 
 # git configs
 .gitconfig
+

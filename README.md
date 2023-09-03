@@ -46,6 +46,10 @@ $ npm run start:prod
 ```
 
 ## Configuration
+
+
+Before setting up environment variables you need to generate a new [ServiceAccount](https://firebase.google.com/support/guides/service-accounts) for your firebase app and also you need to get your firebase's web app [configuration](https://firebase.google.com/docs/web/setup).
+
 Add the following environemnt variables to your .env.local.yml
 app:
 
@@ -70,10 +74,15 @@ db:
   sync: false
   
 firebase:
+  project_id: 
+  private_key:
+  client_email:
+  
+  For project id, private key and client email, be sure to use data from the service account file from your google firebase project [Service accounts](https://firebase.google.com/support/guides/service-accounts)
 
-  serviceAccount: 'path/shambala-5802c-firebase-adminsdk-kuu9t-cdaced1ea4.json'
+Make sure you replace the DB environment variables for the Mongo DB Variables and also the service account variable, replace the path where the file is located.
 
-  Make sure you replace the DB environment variables for the Mongo DB Variables and also the service account variable, replace the path where the file is located.
+Finally, please take a look at the examples files attached to the project (.env-example & .env-example-yaml.yaml)
 
 
 

@@ -8,8 +8,9 @@ export const getMongooseModuleOptions = (
 ): MongooseModuleOptions => {
   const dbName = config.getDatabaseName();
   const password = config.getDatabasePassword();
+  const params = config.getDbParams();
   const user = config.getDatabaseUser();
-  const uri = `${config.getDatabaseHost()}://${user}:${password}/${dbName}`;
+  const uri = `${config.getDatabaseHost()}://${user}:${password}@${dbName}/${params}`;
 
   console.log(uri);
   return {
